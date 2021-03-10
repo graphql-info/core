@@ -1,0 +1,5 @@
+node_modules
+.graphqlrc.yml
+docs
+.DS_Store
+.vscode

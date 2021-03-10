@@ -1,0 +1,28 @@
+{
+  "name": "@graphql-init/core",
+  "version": "0.0.1",
+  "description": "GraphQL Static Documentation Generator",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "GraphQL",
+    "Documentation"
+  ],
+  "author": "Ilya Volodin",
+  "license": "MIT",
+  "dependencies": {
+    "@popeindustries/lit-html-server": "^3.1.0",
+    "cosmiconfig": "^6.0.0",
+    "graphql": "^15.5.0",
+    "graphql-config": "^3.2.0",
+    "marked": "^2.0.1",
+    "prismjs": "^1.23.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.21.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1"
+  }
+}
