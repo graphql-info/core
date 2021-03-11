@@ -4,7 +4,9 @@
   "author": "Ilya Volodin",
   "description": "GraphQL Static Documentation Generator",
   "main": "src/index.js",
-  "bin": "./src/index.js",
+  "bin": {
+    "core": "src/index.js"
+  },
   "engines": {
     "node": ">=12.0.0"
   },
@@ -37,5 +39,13 @@
     "eslint": "^7.21.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/graphql-info/core.git"
+  },
+  "bugs": {
+    "url": "https://github.com/graphql-info/core/issues"
+  },
+  "homepage": "https://github.com/graphql-info/core#readme"
 }
