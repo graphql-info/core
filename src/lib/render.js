@@ -1,17 +1,18 @@
 const { renderToString, html } = require('@popeindustries/lit-html-server');
 const path = require('path');
 const fs = require('fs/promises');
-const navigation = require('./templates/navigation');
-const layout = require('./templates/layout');
-const object = require('./templates/object');
-const mutation = require('./templates/mutation');
-const query = require('./templates/query');
-const scalar = require('./templates/scalar');
-const input = require('./templates/input');
-const directive = require('./templates/directive');
-const enumPage = require('./templates/enum');
-const interfacePage = require('./templates/interface');
-const union = require('./templates/union');
+const navigation = require('../templates/navigation');
+const layout = require('../templates/layout');
+const object = require('../templates/object');
+const mutation = require('../templates/mutation');
+const query = require('../templates/query');
+const scalar = require('../templates/scalar');
+const input = require('../templates/input');
+const directive = require('../templates/directive');
+const enumPage = require('../templates/enum');
+const interfacePage = require('../templates/interface');
+const union = require('../templates/union');
+const intro = require('../templates/intro');
 
 const renderPage = (type, template, items, schema) => items.map((item) => ({
     name: item.name,
@@ -80,8 +81,8 @@ module.exports = async (data, overrides, target, schema) => {
 
     // copy assets
     await fs.mkdir(path.resolve(target, './css'));
-    await fs.copyFile(path.resolve(__dirname, './assets/css/main.css'), path.resolve(target, './css/main.css'));
-    await fs.copyFile(path.resolve(__dirname, './assets/css/prism.css'), path.resolve(target, './css/prism.css'));
+    await fs.copyFile(path.resolve(__dirname, '../assets/css/main.css'), path.resolve(target, './css/main.css'));
+    await fs.copyFile(path.resolve(__dirname, '../assets/css/prism.css'), path.resolve(target, './css/prism.css'));
 
     // created directories
     await Promise.all(Object.keys(data).map(async (type) => {
@@ -89,6 +90,14 @@ module.exports = async (data, overrides, target, schema) => {
             await fs.mkdir(path.resolve(target, type));
         }
     }));
+    await fs.mkdir(path.resolve(target, 'intro'));
+
+    // add index page
+    result.push({
+        name: 'index',
+        type: 'intro',
+        page: intro()
+    });
 
     // render pages
     await Promise.all(result.map(async (page) => {

@@ -4,7 +4,7 @@ const { print } = require('graphql/language');
 const prism = require('prismjs');
 const loadLanguages = require('prismjs/components/');
 const marked = require('marked');
-const { getTypeNameWithLink, getTypeName, getFolderName } = require('../../utils');
+const { getTypeNameWithLink, getTypeName, getFolderName } = require('../../lib/utils');
 
 loadLanguages(['graphql']);
 

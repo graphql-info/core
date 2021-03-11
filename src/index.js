@@ -1,16 +1,21 @@
 const { loadConfig } = require('graphql-config');
-const render = require('./render');
+const path = require('path');
+const render = require('./lib/render');
+const InfoExtension = require('./lib/extension');
 
 async function main() {
     let config;
     try {
-        config = await loadConfig({ throwOnMissing: true, throwOnEmpty: true });
+        config = await loadConfig({ throwOnMissing: true, throwOnEmpty: true, extensions: [InfoExtension] });
     } catch (e) {
         console.log(e);
         throw new Error('Error loading config file', e);
     }
     if (config) {
-        const schema = await config.getDefault().getSchema();
+        const project = config.getDefault();
+        const info = project.extension('graphql-info');
+        const { targetDir } = info;
+        const schema = await project.getSchema();
         const types = {
             query: Object.values(schema.getQueryType()?.getFields() || {}),
             mutation: Object.values(schema.getMutationType()?.getFields() || {}),
@@ -52,7 +57,7 @@ async function main() {
                 }
             }
         });
-        render(types, {}, './docs/', schema);
+        render(types, {}, path.resolve(process.cwd(), targetDir), schema);
     }
 }
 
