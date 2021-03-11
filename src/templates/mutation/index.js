@@ -49,7 +49,7 @@ module.exports = (query, schema) => {
                                 ${unsafeHTML(getTypeNameWithLink(input.type, schema, '../input'))}
                             </dt>
                             <dl>
-                                ${unsafeHTML(marked(schema.getType(getTypeName(input.type))?.description || ''))}
+                                ${unsafeHTML(marked(schema.getType(getTypeName(input.type)).description || ''))}
                             </dl>
                         </div>`)}
                 </section>`

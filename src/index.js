@@ -2,6 +2,7 @@ const { loadConfig } = require('graphql-config');
 const path = require('path');
 const render = require('./lib/render');
 const InfoExtension = require('./lib/extension');
+const fileWriter = require('./lib/fileWriter');
 
 async function main() {
     let config;
@@ -16,10 +17,13 @@ async function main() {
         const info = project.extension('graphql-info');
         const { targetDir } = info;
         const schema = await project.getSchema();
+        const query = schema.getQueryType() ? schema.getQueryType().getFields() : {};
+        const mutation = schema.getMutationType() ? schema.getMutationType().getFields() : {};
+        const subscription = schema.getSubscriptionType() ? schema.getSubscriptionType() : {};
         const types = {
-            query: Object.values(schema.getQueryType()?.getFields() || {}),
-            mutation: Object.values(schema.getMutationType()?.getFields() || {}),
-            subscription: Object.values(schema.getSubscriptionType()?.getFields() || {}),
+            query: Object.values(query),
+            mutation: Object.values(mutation),
+            subscription: Object.values(subscription),
             directive: schema.getDirectives(),
             object: [],
             input: [],
@@ -57,7 +61,10 @@ async function main() {
                 }
             }
         });
-        render(types, {}, path.resolve(process.cwd(), targetDir), schema);
+        const pages = await render(types, {}, schema);
+        await fileWriter(path.resolve(process.cwd(), targetDir), pages);
+        console.log('');
+        console.log('Done');
     }
 }
 

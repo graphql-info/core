@@ -1,18 +1,29 @@
-const { html, nothing} = require('@popeindustries/lit-html-server');
+const { html, nothing } = require('@popeindustries/lit-html-server');
 
-module.exports = (data, currentItem) => html`
+module.exports = (pages, currentItem) => {
+    const navGroups = {};
+    pages.forEach((page) => {
+        if (page.type === 'intro') {
+            return;
+        }
+        if (!navGroups[page.type]) {
+            navGroups[page.type] = [];
+        }
+        navGroups[page.type].push(page);
+    });
+    return html`
     <nav>
-        ${Object.keys(data).map((item) => html`
-            ${data[item] && data[item].length > 0 ? html`
+        ${Object.keys(navGroups).map((item) => html`
+            ${navGroups[item] && navGroups[item].length > 0 ? html`
                 <details ?open=${item === currentItem.type}>
                     <summary>${item}</summary>
                     <ul>
-                    ${data[item] && data[item].map((subitem) => html`
-                        <ol><a href="../${item}/${subitem.name}.html" class="link">${subitem.name}</a></ol>
+                    ${navGroups[item] && navGroups[item].map((subitem) => html`
+                        <ol class="${subitem.name === currentItem.name && subitem.type === currentItem.type ? 'selected' : nothing}"><a href="../${item}/${subitem.name}.html" class="link">${subitem.name}</a></ol>
                     `)}
                     </ul>
                 </details>
             ` : nothing}
         `)}
-    </nav>
-`;
+    </nav>`;
+};

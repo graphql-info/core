@@ -28,6 +28,8 @@ module.exports = {
         }],
         'comma-dangle': ['error', 'never'],
         'max-len': 'off',
-        'no-plusplus': 'off'
+        'no-plusplus': 'off',
+        'no-param-reassign': 'off',
+        'no-console': 'off'
     }
 };

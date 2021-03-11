@@ -1,6 +1,5 @@
 const { renderToString, html } = require('@popeindustries/lit-html-server');
-const path = require('path');
-const fs = require('fs/promises');
+const chalk = require('chalk');
 const navigation = require('../templates/navigation');
 const layout = require('../templates/layout');
 const object = require('../templates/object');
@@ -20,7 +19,7 @@ const renderPage = (type, template, items, schema) => items.map((item) => ({
     page: template.call(null, item, schema)
 }));
 
-module.exports = async (data, overrides, target, schema) => {
+module.exports = async (data, overrides, schema) => {
     let result = [];
     Object.keys(data).forEach((item) => {
         let pages;
@@ -59,39 +58,6 @@ module.exports = async (data, overrides, target, schema) => {
         result = result.concat(pages);
     });
 
-    try {
-        await fs.access(path.resolve(target));
-    } catch (e) {
-        await fs.mkdir(path.resolve(target));
-    }
-
-    // cleanup
-    const cleanUp = async (dir) => {
-        const files = await fs.readdir(path.resolve(dir));
-        await Promise.all(files.map(async (file) => {
-            if ((await fs.lstat(path.resolve(dir, file))).isDirectory()) {
-                await cleanUp(path.resolve(dir, file));
-                await fs.rmdir(path.resolve(dir, file));
-            } else {
-                await fs.unlink(path.resolve(dir, file));
-            }
-        }));
-    };
-    await cleanUp(target);
-
-    // copy assets
-    await fs.mkdir(path.resolve(target, './css'));
-    await fs.copyFile(path.resolve(__dirname, '../assets/css/main.css'), path.resolve(target, './css/main.css'));
-    await fs.copyFile(path.resolve(__dirname, '../assets/css/prism.css'), path.resolve(target, './css/prism.css'));
-
-    // created directories
-    await Promise.all(Object.keys(data).map(async (type) => {
-        if (data[type] && data[type].length > 0) {
-            await fs.mkdir(path.resolve(target, type));
-        }
-    }));
-    await fs.mkdir(path.resolve(target, 'intro'));
-
     // add index page
     result.push({
         name: 'index',
@@ -99,15 +65,16 @@ module.exports = async (data, overrides, target, schema) => {
         page: intro()
     });
 
-    // render pages
-    await Promise.all(result.map(async (page) => {
-        const pageName = path.resolve(target, page.type, `${page.name}.html`);
-        let renderedPage;
-        try {
-            renderedPage = await renderToString(layout(navigation(data, page), Array.isArray(page.page) ? html`${page.page.map((item) => item.value)}` : page.page, page.name));
-        } catch (e) {
-            console.log(e);
-        }
-        await fs.writeFile(pageName, renderedPage);
+    console.log(chalk.green('Rendering pages:'));
+    const renderedResult = Promise.all(result.map(async (page) => {
+        const renderedPage = {
+            name: page.name,
+            type: page.type,
+            page: await renderToString(layout(navigation(result, page), Array.isArray(page.page) ? html`${page.page.map((item) => item.value)}` : page.page, page.name))
+        };
+        process.stdout.write(chalk.green('.'));
+        return renderedPage;
     }));
+
+    return renderedResult;
 };

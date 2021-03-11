@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 const { html } = require('@popeindustries/lit-html-server');
 const { unsafeHTML } = require('@popeindustries/lit-html-server/directives/unsafe-html');
 const { print } = require('graphql/language');
@@ -12,7 +13,6 @@ module.exports = (query, schema) => {
     // remove leading description so it doesn't show up in the code
     const { description } = query;
     delete query.astNode.description;
-
 
     const output = [{
         name: 'title',

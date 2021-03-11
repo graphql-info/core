@@ -5,7 +5,7 @@ const getTypeName = (type) => {
     if (type.ofType) {
         return getTypeName(type.ofType);
     }
-    return typeof type.name === 'string' ? type.name : type.name?.value;
+    return typeof type.name === 'string' ? type.name : type.name.value;
 };
 
 const getTypeDisplayName = (type) => {
@@ -31,7 +31,7 @@ const getTypeNameWithLink = (type, schema, linkPrefix) => {
     const name = typeof type.name === 'string' ? type.name : type.name.value;
 
     const originalType = schema.getType(name);
-    return originalType?.astNode ? `<a class="type" href="${linkPrefix}/${name}.html">${name}</a>` : `<span class="type">${name}</span>`;
+    return originalType && originalType.astNode ? `<a class="type" href="${linkPrefix}/${name}.html">${name}</a>` : `<span class="type">${name}</span>`;
 };
 
 const getFolderName = (type) => {
