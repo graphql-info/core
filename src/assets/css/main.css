@@ -22,7 +22,7 @@ time, mark, audio, video {
 	font-size: 100%;
 	font: inherit;
 	vertical-align: baseline;
-	font-family: Source Sans Pro,sans-serif;
+	font-family: Lato, "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Verdana, Tahoma, sans-serif;
 	line-height: 1.5;
 }
 /* HTML5 display-role reset for older browsers */
@@ -60,12 +60,14 @@ h1 {
 
 .navigation {
 	flex: 1;
-	margin: 10px;
+	padding: 10px;
+	background: #333333;
+	color: #cccccc;
 }
 
 .content {
 	flex: 5;
-	margin: 20px 10px;
+	margin: 20px 10px 20px 40px;
 }
 
 nav summary {
@@ -92,7 +94,11 @@ nav details[open] summary ~ * {
 	padding: 3px;
 	display: block;
 	text-decoration: none;
-	color: black;
+	color: #cccccc;
+}
+
+.selected .link {
+	color: white;
 }
 
 .horizontal-list {
