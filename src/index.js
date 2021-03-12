@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+/* eslint-disable global-require */
+/* eslint-disable import/no-dynamic-require */
 
 const { loadConfig } = require('graphql-config');
 const path = require('path');
@@ -17,7 +19,7 @@ async function main() {
     if (config) {
         const project = config.getDefault();
         const info = project.extension('graphql-info');
-        const { targetDir } = info;
+        const { targetDir = './docs', overrides = {} } = info;
         const schema = await project.getSchema();
         const query = schema.getQueryType() ? schema.getQueryType().getFields() : {};
         const mutation = schema.getMutationType() ? schema.getMutationType().getFields() : {};
@@ -64,6 +66,19 @@ async function main() {
             }
         });
         const pages = await render(types, {}, schema);
+        // process overrides
+        Promise.all(pages.map(async (page) => {
+            if (overrides[page.type]) {
+                try {
+                    const processor = await require(overrides[page.type]);
+                    return processor(page, schema);
+                } catch (e) {
+                    return page;
+                }
+            }
+            return page;
+        }));
+
         await fileWriter(path.resolve(process.cwd(), targetDir), pages);
         console.log('');
         console.log('Done');
