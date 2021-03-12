@@ -45,11 +45,11 @@ module.exports = (query, schema) => {
                     ${query.astNode.arguments.map((input) => html`
                         <div class="input-list horizontal-list">
                             <dd>${input.name.value}</dd>
-                            <dt>
+                            <dt title=${schema.getType(getTypeName(input.type)).description || ''}>
                                 ${unsafeHTML(getTypeNameWithLink(input.type, schema, '../input'))}
                             </dt>
                             <dl>
-                                ${unsafeHTML(marked(schema.getType(getTypeName(input.type)).description || ''))}
+                                ${unsafeHTML(marked((input.description && input.description.value) || schema.getType(getTypeName(input.type)).description || ''))}
                             </dl>
                         </div>`)}
                 </section>`

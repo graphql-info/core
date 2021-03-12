@@ -1,4 +1,4 @@
-const { renderToString, html } = require('@popeindustries/lit-html-server');
+const { renderToString } = require('@popeindustries/lit-html-server');
 const chalk = require('chalk');
 const navigation = require('../templates/navigation');
 const layout = require('../templates/layout');
@@ -12,6 +12,7 @@ const enumPage = require('../templates/enum');
 const interfacePage = require('../templates/interface');
 const union = require('../templates/union');
 const intro = require('../templates/intro');
+const subscription = require('../templates/subscription');
 
 const renderPage = (type, template, items, schema) => items.map((item) => ({
     name: item.name,
@@ -51,6 +52,9 @@ module.exports = async (data, overrides, schema) => {
             case 'union':
                 pages = renderPage('union', union, data[item], schema);
                 break;
+            case 'subscription':
+                pages = renderPage('subscription', subscription, data[item], schema);
+                break;
             default:
                 pages = [];
                 break;
@@ -67,10 +71,11 @@ module.exports = async (data, overrides, schema) => {
 
     console.log(chalk.green('Rendering pages:'));
     const renderedResult = Promise.all(result.map(async (page) => {
+        const nav = navigation(result, page);
         const renderedPage = {
             name: page.name,
             type: page.type,
-            page: await renderToString(layout(navigation(result, page), Array.isArray(page.page) ? html`${page.page.map((item) => item.value)}` : page.page, page.name))
+            page: await renderToString(layout(nav, Array.isArray(page.page) ? page.page.map((item) => item.value) : page.page, page.name))
         };
         process.stdout.write(chalk.green('.'));
         return renderedPage;

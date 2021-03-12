@@ -41,7 +41,7 @@ module.exports = (query, schema) => {
                         <div class='fields-list horizontal-list'>
                             <dd>${getTypeName(unionType)}</dd>
                             <dt>${unsafeHTML(getTypeNameWithLink(type, schema, `../${getFolderName(unionType)}`))}</dt>
-                            <dl>${unsafeHTML(marked(unionType.description || ''))}</dl>
+                            <dl>${unsafeHTML(marked((type.description && type.description.value) || unionType.description || ''))}</dl>
                         </div>
                     `;
                 })}

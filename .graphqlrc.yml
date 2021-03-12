@@ -1,0 +1,5 @@
+schema:
+  - "./schema.docs.graphql"
+extensions:
+  graphql-info:
+    targetDir: ./docs

@@ -48,11 +48,11 @@ module.exports = (query, schema) => {
                     ${query.args.map((input) => html`
                         <div class="input-list horizontal-list">
                             <dd>${input.name}</dd>
-                            <dt>
+                            <dt title=${schema.getType(getTypeName(input.type)).description || ''}>
                                 ${unsafeHTML(getTypeNameWithLink(input.type, schema, `../${getFolderName(input.type)}`))}
                             </dt>
                             <dl>
-                                ${unsafeHTML(marked(schema.getType(getTypeName(input.type)).description || ''))}
+                                ${unsafeHTML(marked(input.description || schema.getType(getTypeName(input.type)).description || ''))}
                             </dl>
                         </div>`)}
                 </section>`

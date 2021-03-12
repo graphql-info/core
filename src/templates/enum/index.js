@@ -28,7 +28,7 @@ module.exports = (query) => {
                 <h3>values</h3>
                 ${query.astNode.values.map((value) => html`
                     <div class="value-list horizontal-list">
-                        <dt>${value.name.value}</dt>
+                        <dt><span class="type">${value.name.value}</span></dt>
                         <dl>${unsafeHTML(marked(value.description.value))}</dl>
                     </div>
                 `)}

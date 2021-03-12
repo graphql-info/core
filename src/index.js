@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const { loadConfig } = require('graphql-config');
 const path = require('path');
 const render = require('./lib/render');
@@ -19,7 +21,7 @@ async function main() {
         const schema = await project.getSchema();
         const query = schema.getQueryType() ? schema.getQueryType().getFields() : {};
         const mutation = schema.getMutationType() ? schema.getMutationType().getFields() : {};
-        const subscription = schema.getSubscriptionType() ? schema.getSubscriptionType() : {};
+        const subscription = schema.getSubscriptionType() ? schema.getSubscriptionType().getFields() : {};
         const types = {
             query: Object.values(query),
             mutation: Object.values(mutation),

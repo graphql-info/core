@@ -40,8 +40,8 @@ module.exports = (query, schema) => {
                     return html`
                         <div class='fields-list horizontal-list'>
                             <dd>${getTypeName(field)}</dd>
-                            <dt>${unsafeHTML(getTypeNameWithLink(field.type, schema, `../${getFolderName(type)}`))}</dt>
-                            <dl>${unsafeHTML(marked(type.description || ''))}</dl>
+                            <dt title="${type.description || ''}">${unsafeHTML(getTypeNameWithLink(field.type, schema, `../${getFolderName(type)}`))}</dt>
+                            <dl>${unsafeHTML(marked(field.description.value || type.description || ''))}</dl>
                         </div>
                     `;
                 })}
