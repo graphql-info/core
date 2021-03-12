@@ -19,7 +19,9 @@ module.exports = (pages, currentItem) => {
                     <summary>${item}</summary>
                     <ul>
                     ${navGroups[item] && navGroups[item].map((subitem) => html`
-                        <ol class="${subitem.name === currentItem.name && subitem.type === currentItem.type ? 'selected' : nothing}"><a href="../${item}/${subitem.name}.html" class="link">${subitem.name}</a></ol>
+                        <ol class="${subitem.name === currentItem.name && subitem.type === currentItem.type ? 'selected' : nothing}">
+                            <a href="../${item}/${subitem.name}.html" class="link" title="${subitem.name}">${subitem.name}</a>
+                        </ol>
                     `)}
                     </ul>
                 </details>

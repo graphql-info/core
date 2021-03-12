@@ -71,13 +71,13 @@ module.exports = async (data, overrides, schema) => {
 
     console.log(chalk.green('Rendering pages:'));
     const renderedResult = Promise.all(result.map(async (page) => {
+        process.stdout.write(chalk.green('.'));
         const nav = navigation(result, page);
         const renderedPage = {
             name: page.name,
             type: page.type,
             page: await renderToString(layout(nav, Array.isArray(page.page) ? page.page.map((item) => item.value) : page.page, page.name))
         };
-        process.stdout.write(chalk.green('.'));
         return renderedPage;
     }));
 

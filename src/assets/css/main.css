@@ -63,6 +63,7 @@ h1 {
 	padding: 10px;
 	background: #333333;
 	color: #cccccc;
+	max-width: 15vw;
 }
 
 .content {
@@ -91,13 +92,13 @@ nav summary::after {
 	right: 5px;
 	border-top: 2px solid #ccc;
 	border-right: 2px solid #ccc;
-	transform: rotate(-45deg);
+	transform: rotate(135deg);
 	transform-origin: center;
 	transition: .2s linear;
 }
 
 nav details[open] summary::after {
-	transform: rotate(134deg);
+	transform: rotate(-45deg);
 }
 
 nav details summary::-webkit-details-marker {
@@ -118,6 +119,9 @@ nav details[open] summary ~ * {
 	display: block;
 	text-decoration: none;
 	color: #cccccc;
+	white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .selected .link {

@@ -1,5 +1,5 @@
 const path = require('path');
-const fs = require('fs').promises;
+const fs = require('fs-extra');
 const chalk = require('chalk');
 
 module.exports = async (target, pages) => {
@@ -10,25 +10,10 @@ module.exports = async (target, pages) => {
     }
 
     // cleanup
-    const cleanUp = async (dir) => {
-        const files = await fs.readdir(path.resolve(dir));
-        await Promise.all(files.map(async (file) => {
-            if ((await fs.lstat(path.resolve(dir, file))).isDirectory()) {
-                await cleanUp(path.resolve(dir, file));
-                await fs.rmdir(path.resolve(dir, file));
-            } else {
-                await fs.unlink(path.resolve(dir, file));
-            }
-        }));
-    };
-    await cleanUp(target);
+    await fs.remove(path.resolve(target));
 
     // copy assets
-    await fs.mkdir(path.resolve(target, './css'));
-    await fs.copyFile(path.resolve(__dirname, '../assets/css/main.css'), path.resolve(target, './css/main.css'));
-    await fs.copyFile(path.resolve(__dirname, '../assets/css/prism.css'), path.resolve(target, './css/prism.css'));
-
-    const createdDirs = [];
+    await fs.copy(path.resolve(__dirname, '../assets/'), path.resolve(target), { overwrite: true, recursive: true });
 
     console.log('');
     console.log(chalk.cyan('Writing files:'));
@@ -36,16 +21,10 @@ module.exports = async (target, pages) => {
     // render pages
     await Promise.all(pages.map(async (page) => {
         const dir = path.resolve(target, page.type);
-        await (async () => {
-            if (!createdDirs.includes(dir)) {
-                createdDirs.push(dir);
-                await fs.mkdir(dir);
-            }
-        })();
         const pageName = path.resolve(dir, `${page.name}.html`);
         try {
-            await fs.writeFile(pageName, page.page);
             process.stdout.write(chalk.cyan('.'));
+            await fs.outputFile(pageName, page.page);
         } catch (e) {
             console.error(e);
         }
