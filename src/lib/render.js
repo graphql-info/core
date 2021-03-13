@@ -17,7 +17,8 @@ const subscription = require('../templates/subscription');
 const renderPage = (type, template, items, schema) => items.map((item) => ({
     name: item.name,
     type,
-    page: template.call(null, item, schema)
+    page: template.call(null, item, schema),
+    ref: item
 }));
 
 module.exports = async (data, overrides, schema) => {
@@ -76,7 +77,8 @@ module.exports = async (data, overrides, schema) => {
         const renderedPage = {
             name: page.name,
             type: page.type,
-            page: await renderToString(layout(nav, Array.isArray(page.page) ? page.page.map((item) => item.value) : page.page, page.name))
+            page: await renderToString(layout(nav, Array.isArray(page.page) ? page.page.map((item) => item.value) : page.page, page.name)),
+            ref: page.ref
         };
         return renderedPage;
     }));
