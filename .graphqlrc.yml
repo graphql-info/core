@@ -3,6 +3,3 @@ schema:
 extensions:
   graphql-info:
     targetDir: ./docs
-    overrides:
-      query: ../../test.js
-      mutation: ../../test.js
