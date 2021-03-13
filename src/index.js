@@ -1,6 +1,4 @@
 #!/usr/bin/env node
-/* eslint-disable global-require */
-/* eslint-disable import/no-dynamic-require */
 
 const { loadConfig } = require('graphql-config');
 const path = require('path');
@@ -65,21 +63,9 @@ async function main() {
                 }
             }
         });
-        const pages = await render(types, {}, schema);
-        // process overrides
-        const overridePages = await Promise.all(pages.map(async (page) => {
-            if (overrides[page.type]) {
-                try {
-                    const processor = await require(overrides[page.type]);
-                    return processor(page, schema);
-                } catch (e) {
-                    return page;
-                }
-            }
-            return page;
-        }));
+        const pages = await render(types, overrides, schema);
 
-        await fileWriter(path.resolve(process.cwd(), targetDir), overridePages);
+        await fileWriter(path.resolve(process.cwd(), targetDir), pages);
         console.log('');
         console.log('Done');
     }

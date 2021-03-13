@@ -1,13 +1,13 @@
 const { html } = require('@popeindustries/lit-html-server');
 const { unsafeHTML } = require('@popeindustries/lit-html-server/directives/unsafe-html');
-const generateQuery = require('./src/queryGenerator');
 const prism = require('prismjs');
 const loadLanguages = require('prismjs/components/');
+const generateQuery = require('./src/queryGenerator');
 
 loadLanguages(['graphql']);
 
 module.exports = (page, schema) => {
-    const query = generateQuery(page.name, page.type === 'query' ? 'Query' : 'Mutation', '', {}, {}, [], 10, schema);
+    const query = generateQuery(page.name, page.type === 'query' ? 'Query' : 'Mutation', '', {}, {}, [], 0, schema);
     page.page.push({
         name: 'input',
         type: 'lit-html',
@@ -19,5 +19,5 @@ module.exports = (page, schema) => {
                 </section>
             </div>`
     });
-    return page;
+    return page.page;
 };

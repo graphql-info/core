@@ -1,3 +1,5 @@
+/* eslint-disable import/no-dynamic-require */
+/* eslint-disable global-require */
 const { renderToString } = require('@popeindustries/lit-html-server');
 const chalk = require('chalk');
 const navigation = require('../templates/navigation');
@@ -14,12 +16,26 @@ const union = require('../templates/union');
 const intro = require('../templates/intro');
 const subscription = require('../templates/subscription');
 
-const renderPage = (type, template, items, schema) => items.map((item) => ({
-    name: item.name,
-    type,
-    page: template.call(null, item, schema),
-    ref: item
-}));
+const renderPage = ({
+    type, template, items, schema, overrides
+}) => items.map((item) => {
+    const page = {
+        name: item.name,
+        type,
+        page: template.call(null, item, schema),
+        ref: item
+    };
+    // process overrides
+    if (overrides[type]) {
+        try {
+            const processor = require(overrides[type]);
+            page.page = processor(page, schema);
+        } catch (e) {
+            // swallow exception
+        }
+    }
+    return page;
+});
 
 module.exports = async (data, overrides, schema) => {
     let result = [];
@@ -27,34 +43,54 @@ module.exports = async (data, overrides, schema) => {
         let pages;
         switch (item) {
             case 'object':
-                pages = renderPage('object', object, data[item], schema);
+                pages = renderPage({
+                    type: 'object', template: object, items: data[item], schema, overrides
+                });
                 break;
             case 'mutation':
-                pages = renderPage('mutation', mutation, data[item], schema);
+                pages = renderPage({
+                    type: 'mutation', template: mutation, items: data[item], schema, overrides
+                });
                 break;
             case 'query':
-                pages = renderPage('query', query, data[item], schema);
+                pages = renderPage({
+                    type: 'query', template: query, items: data[item], schema, overrides
+                });
                 break;
             case 'scalar':
-                pages = renderPage('scalar', scalar, data[item], schema);
+                pages = renderPage({
+                    type: 'scalar', template: scalar, items: data[item], schema, overrides
+                });
                 break;
             case 'input':
-                pages = renderPage('input', input, data[item], schema);
+                pages = renderPage({
+                    type: 'input', template: input, items: data[item], schema, overrides
+                });
                 break;
             case 'directive':
-                pages = renderPage('directive', directive, data[item], schema);
+                pages = renderPage({
+                    type: 'directive', template: directive, items: data[item], schema, overrides
+                });
                 break;
             case 'enum':
-                pages = renderPage('enum', enumPage, data[item], schema);
+                pages = renderPage({
+                    type: 'enum', template: enumPage, items: data[item], schema, overrides
+                });
                 break;
             case 'interface':
-                pages = renderPage('interface', interfacePage, data[item], schema);
+                pages = renderPage({
+                    type: 'interface', template: interfacePage, items: data[item], schema, overrides
+                });
                 break;
             case 'union':
-                pages = renderPage('union', union, data[item], schema);
+                pages = renderPage({
+                    type: 'union', template: union, items: data[item], schema, overrides
+                });
                 break;
             case 'subscription':
-                pages = renderPage('subscription', subscription, data[item], schema);
+                pages = renderPage({
+                    type: 'subscription', template: subscription, items: data[item], schema, overrides
+                });
                 break;
             default:
                 pages = [];
@@ -77,8 +113,7 @@ module.exports = async (data, overrides, schema) => {
         const renderedPage = {
             name: page.name,
             type: page.type,
-            page: await renderToString(layout(nav, Array.isArray(page.page) ? page.page.map((item) => item.value) : page.page, page.name)),
-            ref: page.ref
+            page: await renderToString(layout(nav, Array.isArray(page.page) ? page.page.map((item) => item.value) : page.page, page.name))
         };
         return renderedPage;
     }));
