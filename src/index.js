@@ -67,7 +67,7 @@ async function main() {
         });
         const pages = await render(types, {}, schema);
         // process overrides
-        Promise.all(pages.map(async (page) => {
+        const overridePages = await Promise.all(pages.map(async (page) => {
             if (overrides[page.type]) {
                 try {
                     const processor = await require(overrides[page.type]);
@@ -79,7 +79,7 @@ async function main() {
             return page;
         }));
 
-        await fileWriter(path.resolve(process.cwd(), targetDir), pages);
+        await fileWriter(path.resolve(process.cwd(), targetDir), overridePages);
         console.log('');
         console.log('Done');
     }
