@@ -1,5 +1,10 @@
 schema:
-  - "./schema.docs.graphql"
+  - "../../orchestration/src/typeDefs/*.graphql"
 extensions:
   graphql-info:
     targetDir: ./docs
+    overrides:
+      types:
+        query: '../document/src'
+        mutation: '../document/src'
+      navigation: '../nav-search/src/'

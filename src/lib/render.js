@@ -2,6 +2,7 @@
 /* eslint-disable global-require */
 const { renderToString } = require('@popeindustries/lit-html-server');
 const chalk = require('chalk');
+const path = require('path');
 const navigation = require('../templates/navigation');
 const layout = require('../templates/layout');
 const object = require('../templates/object');
@@ -19,26 +20,33 @@ const subscription = require('../templates/subscription');
 const renderPage = ({
     type, template, items, schema, overrides
 }) => items.map((item) => {
+    let pageRender = (...args) => template(...args);
+    if (overrides && overrides.types[type]) {
+        if (!Array.isArray(overrides.types[type])) {
+            overrides.types[type] = [overrides.types[type]];
+        }
+
+        overrides.types[type].reverse().forEach((override) => {
+            const renderer = override.startsWith('.') ? require(path.resolve(process.cwd(), override)) : require(override);
+            const oldRenderer = pageRender;
+            pageRender = (...args) => renderer.render(...args, type, oldRenderer);
+        });
+    }
+
     const page = {
         name: item.name,
         type,
-        page: template.call(null, item, schema),
-        ref: item
+        page: pageRender(item, schema)
     };
-    // process overrides
-    if (overrides[type]) {
-        try {
-            const processor = require(overrides[type]);
-            page.page = processor(page, schema);
-        } catch (e) {
-            // swallow exception
-        }
-    }
+
+    process.stdout.write(chalk.green('.'));
+
     return page;
 });
 
-module.exports = async (data, overrides, schema) => {
+module.exports = async (data, overrides, schema, assets) => {
     let result = [];
+    console.log(chalk.green('Rendering pages:'));
     Object.keys(data).forEach((item) => {
         let pages;
         switch (item) {
@@ -106,14 +114,23 @@ module.exports = async (data, overrides, schema) => {
         page: intro()
     });
 
-    console.log(chalk.green('Rendering pages:'));
     const renderedResult = Promise.all(result.map(async (page) => {
-        process.stdout.write(chalk.green('.'));
-        const nav = navigation(result, page);
+        let navRenderer = (...args) => navigation(...args);
+        if (overrides && overrides.navigation) {
+            if (!Array.isArray(overrides.navigation)) {
+                overrides.navigation = [overrides.navigation];
+            }
+            overrides.navigation.reverse().forEach((override) => {
+                const renderer = override.startsWith('.') ? require(path.resolve(process.cwd(), override)) : require(override);
+                const oldRenderer = navRenderer;
+                navRenderer = (...args) => renderer.render(...args, oldRenderer);
+            });
+        }
+        const nav = navRenderer(result, page);
         const renderedPage = {
             name: page.name,
             type: page.type,
-            page: await renderToString(layout(nav, Array.isArray(page.page) ? page.page.map((item) => item.value) : page.page, page.name))
+            page: await renderToString(layout(nav, Array.isArray(page.page) ? page.page.map((item) => item.value) : page.page, page.name, assets))
         };
         return renderedPage;
     }));

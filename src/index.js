@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+/* eslint-disable import/no-dynamic-require */
+/* eslint-disable global-require */
 
 const { loadConfig } = require('graphql-config');
 const path = require('path');
@@ -63,9 +65,39 @@ async function main() {
                 }
             }
         });
-        const pages = await render(types, overrides, schema);
 
-        await fileWriter(path.resolve(process.cwd(), targetDir), pages);
+        let assets = [];
+
+        Object.keys(overrides).forEach((override) => {
+            if (Array.isArray(overrides[override])) {
+                overrides[override].forEach((item) => {
+                    const overridePackage = item.startsWith('.') ? require(path.resolve(process.cwd(), item)) : require(item);
+                    assets = assets.concat(overridePackage.init ? overridePackage.init(path.resolve(process.cwd(), targetDir)) : []);
+                });
+            } else if (typeof overrides[override] === 'string') {
+                const overridePackage = overrides[override].startsWith('.') ? require(path.resolve(process.cwd(), overrides[override])) : require(overrides[override]);
+                assets = assets.concat(overridePackage.init ? overridePackage.init(path.resolve(process.cwd(), targetDir)) : []);
+            } else {
+                Object.keys(overrides[override]).forEach((key) => {
+                    const overridePath = overrides[override][key];
+                    if (Array.isArray(overridePath)) {
+                        overridePath.forEach((item) => {
+                            const overridePackage = item.startsWith('.') ? require(path.resolve(process.cwd(), overridePath)) : require(overridePath);
+                            assets = assets.concat(overridePackage.init ? overridePackage.init(path.resolve(process.cwd(), targetDir)) : []);
+                        });
+                    } else {
+                        const overridePackage = overridePath.startsWith('.') ? require(path.resolve(process.cwd(), overridePath)) : require(overridePath);
+                        assets = assets.concat(overridePackage.init ? overridePackage.init(path.resolve(process.cwd(), targetDir)) : []);
+                    }
+                });
+            }
+        });
+
+        assets = assets.map((item) => ({ name: path.relative(path.resolve(process.cwd(), targetDir, './query'), path.resolve(process.cwd(), targetDir, item.name)), path: item.path }));
+
+        const pages = await render(types, overrides, schema, assets);
+
+        await fileWriter(path.resolve(process.cwd(), targetDir), pages, assets);
         console.log('');
         console.log('Done');
     }
