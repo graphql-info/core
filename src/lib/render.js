@@ -29,7 +29,9 @@ const renderPage = ({
         overrides.types[type].reverse().forEach((override) => {
             const renderer = override.startsWith('.') ? require(path.resolve(process.cwd(), override)) : require(override);
             const oldRenderer = pageRender;
-            pageRender = (...args) => renderer.render(...args, type, oldRenderer);
+            if (renderer.render) {
+                pageRender = (...args) => renderer.render(...args, type, oldRenderer);
+            }
         });
     }
 

@@ -7,4 +7,11 @@ extensions:
       types:
         query: '../document/src'
         mutation: '../document/src'
+        directive: '../used-by/src'
+        input: '../used-by/src'
+        object: '../used-by/src'
+        union: '../used-by/src'
+        interface: '../used-by/src'
+        enum: '../used-by/src'
+        scalar: '../used-by/src'
       navigation: '../nav-search/src/'

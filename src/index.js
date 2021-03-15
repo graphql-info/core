@@ -72,22 +72,22 @@ async function main() {
             if (Array.isArray(overrides[override])) {
                 overrides[override].forEach((item) => {
                     const overridePackage = item.startsWith('.') ? require(path.resolve(process.cwd(), item)) : require(item);
-                    assets = assets.concat(overridePackage.init ? overridePackage.init(path.resolve(process.cwd(), targetDir)) : []);
+                    assets = assets.concat(overridePackage.init ? overridePackage.init(path.resolve(process.cwd(), targetDir), schema) : []);
                 });
             } else if (typeof overrides[override] === 'string') {
                 const overridePackage = overrides[override].startsWith('.') ? require(path.resolve(process.cwd(), overrides[override])) : require(overrides[override]);
-                assets = assets.concat(overridePackage.init ? overridePackage.init(path.resolve(process.cwd(), targetDir)) : []);
+                assets = assets.concat(overridePackage.init ? overridePackage.init(path.resolve(process.cwd(), targetDir), schema) : []);
             } else {
                 Object.keys(overrides[override]).forEach((key) => {
                     const overridePath = overrides[override][key];
                     if (Array.isArray(overridePath)) {
                         overridePath.forEach((item) => {
-                            const overridePackage = item.startsWith('.') ? require(path.resolve(process.cwd(), overridePath)) : require(overridePath);
-                            assets = assets.concat(overridePackage.init ? overridePackage.init(path.resolve(process.cwd(), targetDir)) : []);
+                            const overridePackage = item.startsWith('.') ? require(path.resolve(process.cwd(), item)) : require(item);
+                            assets = assets.concat(overridePackage.init ? overridePackage.init(path.resolve(process.cwd(), targetDir), schema) : []);
                         });
                     } else {
                         const overridePackage = overridePath.startsWith('.') ? require(path.resolve(process.cwd(), overridePath)) : require(overridePath);
-                        assets = assets.concat(overridePackage.init ? overridePackage.init(path.resolve(process.cwd(), targetDir)) : []);
+                        assets = assets.concat(overridePackage.init ? overridePackage.init(path.resolve(process.cwd(), targetDir), schema) : []);
                     }
                 });
             }

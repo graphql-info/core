@@ -152,12 +152,9 @@ nav details[open] summary ~ * {
 	flex: 6;
 }
 
-.horizontal-list .type {
+section a.type {
 	font-family: "SFMono-Regular", "Consolas", "Liberation Mono", "Menlo", monospace;
 	font-size: .9em;
-}
-
-.horizontal-list a.type {
 	text-decoration: none;
 	color: #00a4db;
 }
