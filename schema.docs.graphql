@@ -995,9 +995,6 @@ input AuditLogOrder {
 Properties by which Audit Log connections can be ordered.
 """
 enum AuditLogOrderField {
-  """
-  Order audit log entries by timestamp
-  """
   CREATED_AT
 }
 
