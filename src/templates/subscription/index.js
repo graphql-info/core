@@ -3,7 +3,7 @@ const { unsafeHTML } = require('@popeindustries/lit-html-server/directives/unsaf
 const { print } = require('graphql/language');
 const prism = require('prismjs');
 const loadLanguages = require('prismjs/components/');
-const marked = require('marked');
+const marked = require('marked').marked;
 const { getTypeNameWithLink, getTypeName, getFolderName } = require('../../lib/utils');
 
 loadLanguages(['graphql']);

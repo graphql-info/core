@@ -1,7 +1,7 @@
 const { html } = require('@popeindustries/lit-html-server');
 const { unsafeHTML } = require('@popeindustries/lit-html-server/directives/unsafe-html');
 const loadLanguages = require('prismjs/components/');
-const marked = require('marked');
+const marked = require('marked').marked;
 
 loadLanguages(['graphql']);
 
