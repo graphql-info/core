@@ -1,5 +1,5 @@
 schema:
-  - "../../orchestration/src/typeDefs/*.graphql"
+  - "*.graphql"
 extensions:
   graphql-info:
     targetDir: ./docs

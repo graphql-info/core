@@ -1,7 +1,8 @@
 const { html } = require('@popeindustries/lit-html-server');
 const { unsafeHTML } = require('@popeindustries/lit-html-server/directives/unsafe-html');
 const loadLanguages = require('prismjs/components/');
-const marked = require('marked');
+const { marked } = require('marked');
+const { sanitizeDescription } = require('../../lib/utils');
 
 loadLanguages(['graphql']);
 
@@ -29,7 +30,7 @@ module.exports = (query) => {
                 ${query.astNode.values.map((value) => html`
                     <div class="value-list horizontal-list">
                         <dt><span class="type">${value.name.value}</span></dt>
-                        <dl>${unsafeHTML(marked(value.description.value))}</dl>
+                        <dl>${unsafeHTML(marked(sanitizeDescription(value)))}</dl>
                     </div>
                 `)}
             </section>

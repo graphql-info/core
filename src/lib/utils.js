@@ -31,7 +31,9 @@ const getTypeNameWithLink = (type, schema, linkPrefix) => {
     const name = typeof type.name === 'string' ? type.name : type.name.value;
 
     const originalType = schema.getType(name);
-    return originalType && originalType.astNode ? `<a class="type" href="${linkPrefix}/${name}.html">${name}</a>` : `<span class="type">${name}</span>`;
+    return originalType && originalType.astNode
+        ? `<a class="type" href="${linkPrefix}/${name}.html">${name}</a>`
+        : `<span class="type">${name}</span>`;
 };
 
 const getFolderName = (type) => {
@@ -59,9 +61,17 @@ const getFolderName = (type) => {
     }
 };
 
+const sanitizeDescription = (value) => {
+    if (!value.description) {
+        return 'No description is available yet';
+    }
+    return value.description.value;
+};
+
 module.exports = {
     getTypeDisplayName,
     getTypeName,
     getTypeNameWithLink,
-    getFolderName
+    getFolderName,
+    sanitizeDescription
 };

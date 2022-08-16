@@ -6,7 +6,7 @@
   "main": "src/index.js",
   "bin": "./src/index.js",
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=12.22.0"
   },
   "files": [
     "LICENSE",
@@ -15,6 +15,7 @@
   ],
   "scripts": {
     "test": "test",
+    "generate": "node src/index.js",
     "lint": "eslint ."
   },
   "keywords": [
@@ -27,12 +28,12 @@
   "dependencies": {
     "@popeindustries/lit-html-server": "^3.1.0",
     "chalk": "^2.4.2",
-    "cosmiconfig": "^6.0.0",
+    "cosmiconfig": "^7.0.0",
     "fs-extra": "^9.1.0",
-    "graphql": "^15.5.0",
-    "graphql-config": "^3.2.0",
-    "marked": "^2.0.1",
-    "prismjs": "^1.23.0"
+    "graphql": "^16.1.0",
+    "graphql-config": "^4.0.0",
+    "marked": "^4.0.1",
+    "prismjs": "^1.27.0"
   },
   "devDependencies": {
     "eslint": "^7.21.0",
