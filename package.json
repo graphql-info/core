@@ -1,6 +1,6 @@
 {
   "name": "@graphql-info/core",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "author": "Ilya Volodin",
   "description": "GraphQL Static Documentation Generator",
   "main": "src/index.js",
@@ -32,7 +32,7 @@
     "fs-extra": "^9.1.0",
     "graphql": "^16.1.0",
     "graphql-config": "^4.0.0",
-    "marked": "^4.0.1",
+    "marked": "^4.0.18",
     "prismjs": "^1.27.0"
   },
   "devDependencies": {
