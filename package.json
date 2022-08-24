@@ -27,9 +27,9 @@
   "license": "MIT",
   "dependencies": {
     "@popeindustries/lit-html-server": "^3.1.0",
-    "chalk": "^2.4.2",
+    "chalk": "^4.1.1",
     "cosmiconfig": "^7.0.0",
-    "fs-extra": "^9.1.0",
+    "fs-extra": "^10.1.0",
     "graphql": "^16.1.0",
     "graphql-config": "^4.0.0",
     "marked": "^4.0.18",
@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "eslint": "^7.21.0",
-    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.22.1"
   },
   "repository": {
